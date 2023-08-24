@@ -62,7 +62,7 @@ int askMBOffset(int lastOffset){
     for(int i=0;i<gameCnt;i++){
         gameMenu.addOption(std::to_string(gameEntries[i].MB_offset) +std::string("MB  ") +std::string(gameEntries[i].name));
     }
-    int option = gameMenu.getDecision();
+    int option = gameMenu.printList();
     while(option == -1){
         option = gameMenu.getDecision();
     }

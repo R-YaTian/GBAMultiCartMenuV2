@@ -14,11 +14,12 @@ class Menu{
 	int offset;
 	s8 timer;
 	void printSelection();
-	
-	
-	
-	
-	
+	void printCursor(int move_type = 0);
+	// move_type:
+	// 0 = scroll menu
+	// 1 = move down
+	// 2 = move up
+
 	void moveUp();
 	void moveDown();
 	
@@ -28,7 +29,8 @@ public:
 	Menu(const char* title);
 	void clear();
 	void addOption(std::string name);
-	int getDecision();	
+	int getDecision();
+	int printList();
 	void setTitle(const char* t);
 	int size();
 

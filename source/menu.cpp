@@ -26,11 +26,19 @@ void Menu::addOption(std::string name){
 	options.push_back(name);
 }
 
+int Menu::printList(){
+    VBlankIntrWait();
+    printSelection();
+    return -1;
+}
+
 int Menu::getDecision(){
 	if(options.size() < 1){return -1;}
 	bool hasChosen = false;
-	do{
-	
+	VBlankIntrWait();
+	setPos(0, 28);
+	printf_zh(">");
+	do {
 		scanKeys();
 		auto key = keysDown();
 		if(key & KEY_UP){
@@ -38,7 +46,7 @@ int Menu::getDecision(){
 		}else if(key & KEY_DOWN){
 			moveDown();
 		}
-		
+
 		if(key & KEY_A){
 			hasChosen = 1;
 		}
@@ -56,22 +64,21 @@ int Menu::getDecision(){
 			while(keysHeld() & KEY_UP){
 				moveUp();
 				VBlankIntrWait();
-				printSelection();
+				printCursor(2);
 				scanKeys();
 			}
 			while(keysHeld() & KEY_DOWN){
 				moveDown();
 				VBlankIntrWait();
-				printSelection();
+				printCursor(1);
 				scanKeys();
 			}
 		}
 
 		VBlankIntrWait();
-		printSelection();
-
-	}while(hasChosen == false);
-return selected;
+		printCursor();
+	} while(hasChosen == false);
+    return selected;
 }
 
 
@@ -81,9 +88,9 @@ void Menu::printSelection(){
 	printf_zh("%s\n\n", title);
 	//offset:int selected:int 
 	for(int i=0;i<height-2;i++){
-		if((int)selected == (int)(i+offset)){
-			printf_zh(">");
-		}
+		//if((int)selected == (int)(i+offset)){
+			//printf_zh(">");
+		//}
 		if((int)(i+offset)<(int)options.size()){
 			printf_zh(" %s\n", options.at(i+offset).c_str());
 		}
@@ -94,6 +101,26 @@ void Menu::printSelection(){
 	syncToScreen();
 }
 
+void Menu::printCursor(int move_type) {
+	syncDisable();
+
+    // selected: int
+    if (move_type == 0)
+    {
+        halClearChar(0, (selected - offset + 2) * 14 + 14);
+        halClearChar(0, (selected - offset + 2) * 14 - 14);
+    } else if (move_type == 1) {
+        halClearChar(0, (selected - offset + 2) * 14 - 14);
+    } else if (move_type == 2) {
+        halClearChar(0, (selected - offset + 2) * 14 + 14);
+    }
+    setPos(0, (selected - offset + 2) * 14);
+	printf_zh(">");
+
+	syncEnable();
+	VBlankIntrWait();
+	syncToScreen();
+}
 
 void Menu::setTitle(const char* t){
 	title = t;
@@ -111,7 +138,9 @@ void Menu::moveUp(){
 	}
 	if(selected-offset == 0){
 		selected--;
-		offset--;
+		offset-=9;
+		VBlankIntrWait();
+		printSelection();
 	}else{
 		selected--;
 	}
@@ -121,14 +150,14 @@ void Menu::moveDown(){
 	if(selected >= (int)options.size()-1){
 		return;
 	}
-	if(selected-offset == height-3){
+	if((selected-offset) && ((selected-offset) % (height-3) == 0)){
 		selected++;
-		offset++;
+		offset+=9;
+		VBlankIntrWait();
+		printSelection();
 	}else{
 		selected++;
 	}
-
-	
 }
 
 

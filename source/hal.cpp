@@ -33,3 +33,10 @@ void syncToScreen(){
 void halClearPixel(){
   memset(vramBuf,0,VRAM_SIZE);
 }
+void halClearChar(int xx, int yy){
+  for (u8 y = 0; y < 14; y++) {
+    for (u8 x = 0; x < 7; x++) {
+      halDrawPixel(xx + x, yy + y, 0);
+    }
+  }
+}

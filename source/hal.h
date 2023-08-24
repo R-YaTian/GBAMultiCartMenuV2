@@ -19,3 +19,4 @@ void halClearPixel();
 void syncToScreen();
 void syncEnable();
 void syncDisable();
+void halClearChar(int x, int y);
