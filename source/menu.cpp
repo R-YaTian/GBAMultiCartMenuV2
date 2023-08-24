@@ -102,7 +102,7 @@ void Menu::printSelection(){
 }
 
 void Menu::printCursor(int move_type) {
-	syncDisable();
+    syncDisable();
 
     // selected: int
     if (move_type == 0)
@@ -115,11 +115,11 @@ void Menu::printCursor(int move_type) {
         halClearChar(0, (selected - offset + 2) * 14 + 14);
     }
     setPos(0, (selected - offset + 2) * 14);
-	printf_zh(">");
+    printf_zh(">");
 
-	syncEnable();
-	VBlankIntrWait();
-	syncToScreen();
+    syncEnable();
+    VBlankIntrWait();
+    syncToScreen();
 }
 
 void Menu::setTitle(const char* t){
