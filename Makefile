@@ -25,6 +25,7 @@ TARGET		:= $(notdir $(CURDIR))
 BUILD		:= build
 SOURCES		:= source
 INCLUDES	:= include
+GAME_TITLE  := ausar_menu
 DATA		:=
 MUSIC		:=
 
@@ -118,7 +119,7 @@ $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	@rm $(TARGET).elf
-	@gbafix $(TARGET).gba -tausar_menu
+
 
 #---------------------------------------------------------------------------------
 clean:
