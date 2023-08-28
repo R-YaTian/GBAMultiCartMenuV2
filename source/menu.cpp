@@ -39,13 +39,13 @@ int Menu::getDecision(int cur_x, int cur_y){
 	setPos(cur_x, cur_y);
 	printf_zh(">");
 	do {
-	    move_type = 0;
+        move_type = 0;
 		scanKeys();
 		auto key = keysDown();
 		if(key & KEY_UP){
 			moveUp();
 		}else if(key & KEY_DOWN){
-		    move_type = 1;
+            move_type = 1;
 			moveDown();
 		}
 
@@ -57,9 +57,9 @@ int Menu::getDecision(int cur_x, int cur_y){
 		}
 
 		if((keysHeld() & (KEY_DOWN | KEY_UP)) && timer < 20)
-			timer++;
+            timer++;
 		else
-		    timer = 0;
+            timer = 0;
 
 		if (timer == 20) {
 			while((keysHeld() & KEY_UP) && !(keysHeld() & KEY_DOWN)){
@@ -69,7 +69,7 @@ int Menu::getDecision(int cur_x, int cur_y){
 				scanKeys();
 			}
 			while((keysHeld() & KEY_DOWN) && !(keysHeld() & KEY_UP)){
-			    move_type = 1;
+                move_type = 1;
 				moveDown();
 				VBlankIntrWait();
 				printCursor(cur_x, cur_y);
