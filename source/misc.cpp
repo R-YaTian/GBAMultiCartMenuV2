@@ -8,7 +8,7 @@ EWRAM_BSS u8 sramBackup[3];
 
 
 
-EWRAM_BSS GameEntry gameEntries[32];//最多64个游戏
+EWRAM_BSS GameEntry gameEntries[32]; //最多32个游戏
 EWRAM_BSS int gameCnt=0;
 
 void backupSramLite(){
@@ -104,6 +104,7 @@ IWRAM_CODE void findGames(){
                 gameEntries[gameCnt].name[GAME_NAME_LEN] = 0;//字符串结尾
             }
             gameEntries[gameCnt].MB_offset = MB_Offset;
+            gameEntries[gameCnt].Game_index = gameCnt; // 游戏序号从0开始算，用于保存存档
             gameCnt++;
         }
     }
@@ -111,9 +112,8 @@ IWRAM_CODE void findGames(){
     return;
 }
 
-
 void pressToContinue(bool show){
-    if(show){   
+    if(show){
         printf_zh("按任意键继续\n");
     }
     while(1){

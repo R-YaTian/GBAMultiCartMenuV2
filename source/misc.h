@@ -27,6 +27,7 @@ struct RedirectStruct{
 struct GameEntry{
     char name[GAME_NAME_LEN_EXPAND + 1];
     int MB_offset;
+    int Game_index;
 };
 
 extern GameEntry gameEntries[32];

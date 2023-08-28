@@ -4,7 +4,6 @@
 #include "misc.h"
 #include "font.h"
 
-
 Menu::Menu(const char* title){
 	clear();
 	setTitle(title);
@@ -19,6 +18,7 @@ void Menu::clear(){
 	height = CONSOLE_HEIGHT;
 	selected = 0;
 	offset = 0;
+	move_type = 0;
 	options.clear();	
 }
 
@@ -32,18 +32,20 @@ int Menu::printList(){
     return -1;
 }
 
-int Menu::getDecision(){
+int Menu::getDecision(int cur_x, int cur_y){
 	if(options.size() < 1){return -1;}
 	bool hasChosen = false;
 	VBlankIntrWait();
-	setPos(0, 28);
+	setPos(cur_x, cur_y);
 	printf_zh(">");
 	do {
+	    move_type = 0;
 		scanKeys();
 		auto key = keysDown();
 		if(key & KEY_UP){
 			moveUp();
 		}else if(key & KEY_DOWN){
+		    move_type = 1;
 			moveDown();
 		}
 
@@ -54,40 +56,40 @@ int Menu::getDecision(){
 			hasChosen = 1; selected = -1;
 		}
 
-		if(keysHeld() & KEY_DOWN && timer > -20){
-			timer--;
-		}else if(keysHeld() & KEY_UP && timer < 20){
+		if((keysHeld() & (KEY_DOWN | KEY_UP)) && timer < 20)
 			timer++;
-		}else timer = 0;
+		else
+		    timer = 0;
 
-		if(timer == 20 || timer == -20){
-			while(keysHeld() & KEY_UP){
+		if (timer == 20) {
+			while((keysHeld() & KEY_UP) && !(keysHeld() & KEY_DOWN)){
 				moveUp();
 				VBlankIntrWait();
-				printCursor(2);
+				printCursor(cur_x, cur_y);
 				scanKeys();
 			}
-			while(keysHeld() & KEY_DOWN){
+			while((keysHeld() & KEY_DOWN) && !(keysHeld() & KEY_UP)){
+			    move_type = 1;
 				moveDown();
 				VBlankIntrWait();
-				printCursor(1);
+				printCursor(cur_x, cur_y);
 				scanKeys();
 			}
+			timer = 0;
 		}
 
 		VBlankIntrWait();
-		printCursor();
+		printCursor(cur_x, cur_y);
 	} while(hasChosen == false);
     return selected;
 }
 
-
 void Menu::printSelection(){
 	syncDisable();
 	clearConsole();
-	printf_zh("%s\n\n", title);
+	printf_zh("%s\n", title);
 	//offset:int selected:int 
-	for(int i=0;i<height-2;i++){
+	for(int i=0;i<height-1;i++){
 		//if((int)selected == (int)(i+offset)){
 			//printf_zh(">");
 		//}
@@ -101,20 +103,13 @@ void Menu::printSelection(){
 	syncToScreen();
 }
 
-void Menu::printCursor(int move_type) {
+void Menu::printCursor(int cur_x, int cur_y) {
     syncDisable();
+    int index_fix = move_type ? -14 : 14;
 
     // selected: int
-    if (move_type == 0)
-    {
-        halClearChar(0, (selected - offset + 2) * 14 + 14);
-        halClearChar(0, (selected - offset + 2) * 14 - 14);
-    } else if (move_type == 1) {
-        halClearChar(0, (selected - offset + 2) * 14 - 14);
-    } else if (move_type == 2) {
-        halClearChar(0, (selected - offset + 2) * 14 + 14);
-    }
-    setPos(0, (selected - offset + 2) * 14);
+    halClearChar(cur_x, (selected - offset) * 14 + index_fix + cur_y);
+    setPos(cur_x, (selected - offset) * 14 + cur_y);
     printf_zh(">");
 
     syncEnable();
@@ -130,15 +125,13 @@ int Menu::size(){
 	return options.size();
 }
 
-
-
 void Menu::moveUp(){
 	if(selected == 0){
 		return;
 	}
 	if(selected-offset == 0){
 		selected--;
-		offset-=9;
+		offset-=10;
 		VBlankIntrWait();
 		printSelection();
 	}else{
@@ -150,20 +143,18 @@ void Menu::moveDown(){
 	if(selected >= (int)options.size()-1){
 		return;
 	}
-	if((selected-offset) && ((selected-offset) % (height-3) == 0)){
+	if((selected-offset) && ((selected-offset) % (height-2) == 0)){
 		selected++;
-		offset+=9;
+		offset+=10;
 		VBlankIntrWait();
 		printSelection();
+		move_type = 0; // 如果翻到下一页，则重置光标移动类型
 	}else{
 		selected++;
 	}
 }
 
-
-
 int Menu::getNumerical(){
-	
 	selected = numerical_min;
 	bool hasChosen = false;
 	
@@ -215,15 +206,10 @@ int Menu::getNumerical(){
 	return selected*numerical_increment;
 }
 
-
-
 void Menu::printNumericalSelection(){
 	clearConsole();
 	printf_zh("%s %02X\n\nUp/Down - Select\nA - Confirm\nB - Back", title, selected*numerical_increment);	
 }
-
-
-
 
 Menu numericalMenu(const char* title, int min, int max, int increment){
 	Menu menu;
