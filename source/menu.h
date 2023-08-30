@@ -4,6 +4,10 @@
 #include <string>
 #include <cstdio>
 
+#include <maxmod.h>
+#include "soundbank.h"
+#include "soundbank_bin.h"
+
 #define CONSOLE_HEIGHT 11
 
 class Menu{
@@ -23,6 +27,11 @@ class Menu{
 	void moveUp();
 	void moveDown();
 
+	mm_sound_effect snd_launch;
+	mm_sound_effect snd_back;
+	mm_sound_effect snd_switch;
+	mm_sfxhand launch;
+
 public:
 	Menu();
 	Menu(const char* title);
@@ -33,13 +42,11 @@ public:
 	void setTitle(const char* t);
 	int size();
 
-	void printNumericalSelection();
-	int getNumerical();
-	int numerical_min;
-	int numerical_max;
-	int numerical_increment;
+	// void printNumericalSelection();
+	// int getNumerical();
+	// int numerical_min;
+	// int numerical_max;
+	// int numerical_increment;
 };
 
-
-
-Menu numericalMenu(const char* title, int min, int max, int increment);
+// Menu numericalMenu(const char* title, int min, int max, int increment);

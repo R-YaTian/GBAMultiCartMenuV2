@@ -3,10 +3,37 @@
 #include "gba_systemcalls.h"
 #include "misc.h"
 #include "font.h"
+#include "splash.h"
 
 Menu::Menu(const char* title){
 	clear();
 	setTitle(title);
+
+	snd_launch = {
+		{ SFX_LAUNCH } ,		// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
+
+	snd_back = {
+		{ SFX_BACK } ,			// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
+
+	snd_switch = {
+		{ SFX_SWITCH } ,		// id
+		(int)(1.0f * (1<<10)),	// rate
+		0,		// handle
+		255,	// volume
+		128,	// panning
+	};
+
+	mmStart(MOD_FLATOUTLIES, MM_PLAY_LOOP);
 }
 
 Menu::Menu(){
@@ -19,7 +46,7 @@ void Menu::clear(){
 	selected = 0;
 	offset = 0;
 	move_type = 0;
-	options.clear();	
+	options.clear();
 }
 
 void Menu::addOption(std::string name){
@@ -43,17 +70,23 @@ int Menu::getDecision(int cur_x, int cur_y){
 		scanKeys();
 		auto key = keysDown();
 		if(key & KEY_UP){
+			mmEffectEx(&snd_switch);
 			moveUp();
 		}else if(key & KEY_DOWN){
+			mmEffectEx(&snd_switch);
 			move_type = 1;
 			moveDown();
 		}
 
 		if(key & KEY_A){
+			launch = mmEffectEx(&snd_launch);
 			hasChosen = 1;
 		}
+
 		if(key & KEY_B){
-			hasChosen = 1; selected = -1;
+			mmEffectEx(&snd_back);
+			halClearChar(cur_x, (selected - offset) * 14 + cur_y, (u16*)gImage_splash);
+			selected -= selected % 10;
 		}
 
 		if((keysHeld() & (KEY_DOWN | KEY_UP)) && timer < 20)
@@ -81,12 +114,14 @@ int Menu::getDecision(int cur_x, int cur_y){
 		VBlankIntrWait();
 		printCursor(cur_x, cur_y);
 	} while(hasChosen == false);
+	mmStop();
     return selected;
 }
 
 void Menu::printSelection(){
 	syncDisable();
 	clearConsole();
+	halDrawFullScreenBG((u16*)gImage_splash);
 	printf_zh("%s\n", title);
 	//offset:int selected:int 
 	for(int i=0;i<height-1;i++){
@@ -108,7 +143,7 @@ void Menu::printCursor(int cur_x, int cur_y) {
     int index_fix = move_type ? -14 : 14;
 
     // selected: int
-    halClearChar(cur_x, (selected - offset) * 14 + index_fix + cur_y);
+    halClearChar(cur_x, (selected - offset) * 14 + index_fix + cur_y, (u16*)gImage_splash);
     setPos(cur_x, (selected - offset) * 14 + cur_y);
     printf_zh(">");
 
@@ -153,7 +188,7 @@ void Menu::moveDown(){
 		selected++;
 	}
 }
-
+/*
 int Menu::getNumerical(){
 	selected = numerical_min;
 	bool hasChosen = false;
@@ -219,3 +254,4 @@ Menu numericalMenu(const char* title, int min, int max, int increment){
 	menu.numerical_increment = increment;
 	return menu;
 }
+*/

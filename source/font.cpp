@@ -116,7 +116,6 @@ void printf_zh_color(u16 color,const char *format, ...)
     utf8to16AndDraw(printf_str_buffer,color);
 }
 void clearConsole(){
-  halClearPixel();
+  halClearScreen();
   setPos(0,0);  
 }
-//******************************************************************************

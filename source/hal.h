@@ -9,14 +9,14 @@
 
 
 int halGetScreenWidth();
-
 int halGetScreenHeight();
 
 void halDrawPixel(int x, int y, u16 color);
 
 const char *halGetFontDataPtr();
-void halClearPixel();
+void halClearScreen();
 void syncToScreen();
 void syncEnable();
 void syncDisable();
-void halClearChar(int x, int y);
+void halClearChar(int x, int y, u16 *BG = 0);
+void halDrawFullScreenBG(u16 *GFX);
