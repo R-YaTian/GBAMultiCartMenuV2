@@ -33,6 +33,8 @@ Menu::Menu(const char* title){
 		128,	// panning
 	};
 
+	*(vu16*)0x4000084 = 0x80;
+	mmSetModuleVolume(500);
 	mmStart(MOD_FLATOUTLIES, MM_PLAY_LOOP);
 }
 
@@ -55,6 +57,7 @@ void Menu::addOption(std::string name){
 
 int Menu::printList(){
     VBlankIntrWait();
+    mmFrame();
     printSelection();
     return -1;
 }
@@ -63,6 +66,7 @@ int Menu::getDecision(int cur_x, int cur_y){
 	if(options.size() < 1){return -1;}
 	bool hasChosen = false;
 	VBlankIntrWait();
+	mmFrame();
 	setPos(cur_x, cur_y);
 	printf_zh(">");
 	do {
@@ -98,6 +102,7 @@ int Menu::getDecision(int cur_x, int cur_y){
 			while((keysHeld() & KEY_UP) && !(keysHeld() & KEY_DOWN)){
 				moveUp();
 				VBlankIntrWait();
+				mmFrame();
 				printCursor(cur_x, cur_y);
 				scanKeys();
 			}
@@ -105,6 +110,7 @@ int Menu::getDecision(int cur_x, int cur_y){
 				move_type = 1;
 				moveDown();
 				VBlankIntrWait();
+				mmFrame();
 				printCursor(cur_x, cur_y);
 				scanKeys();
 			}
@@ -112,8 +118,10 @@ int Menu::getDecision(int cur_x, int cur_y){
 		}
 
 		VBlankIntrWait();
+		mmFrame();
 		printCursor(cur_x, cur_y);
 	} while(hasChosen == false);
+	*(vu16*)0x4000084 = 0x00;
 	mmStop();
 	return selected;
 }
@@ -135,6 +143,7 @@ void Menu::printSelection(){
 
 	syncEnable();
 	VBlankIntrWait();
+	mmFrame();
 	syncToScreen();
 }
 
@@ -149,6 +158,7 @@ void Menu::printCursor(int cur_x, int cur_y) {
 
     syncEnable();
     VBlankIntrWait();
+    mmFrame();
     syncToScreen();
 }
 
@@ -168,6 +178,7 @@ void Menu::moveUp(){
 		selected--;
 		offset-=10;
 		VBlankIntrWait();
+		mmFrame();
 		printSelection();
 	}else{
 		selected--;
@@ -182,6 +193,7 @@ void Menu::moveDown(){
 		selected++;
 		offset+=10;
 		VBlankIntrWait();
+		mmFrame();
 		printSelection();
 		move_type = 0; // 如果翻到下一页，则重置光标移动类型
 	}else{

@@ -71,7 +71,6 @@ int askMBOffset(int lastOffset){
     LastTimeRun newLastRun(offset, index); //建立新的meta
     strncpy(newLastRun.gameName, gameEntries[option].name, GAME_NAME_LEN);
     newLastRun.gameName[GAME_NAME_LEN]='\0';
-
     saveMetaToFlash(newLastRun);
 
     loadFlashSaveToBuffer(index, false); //加载先前的存档
