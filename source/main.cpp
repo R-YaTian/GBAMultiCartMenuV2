@@ -48,10 +48,10 @@ IWRAM_CODE int main(void) {
 
 	// REG_IME = 1;
 	REG_WAITCNT = 0x46DA;
-    REG_TM2CNT_L = 65535-1872; // 1872 ticks = 1/35 secs
-    REG_TM2CNT_H = TM_FREQ_256 | TM_ENABLE; // we're using the 256 cycle timer
-    // cascade into tm3
-    REG_TM3CNT_H = TM_CASCADE | TM_ENABLE;
+	REG_TM2CNT_L = 65535-1872; // 1872 ticks = 1/35 secs
+	REG_TM2CNT_H = TM_FREQ_256 | TM_ENABLE; // we're using the 256 cycle timer
+	// cascade into tm3
+	REG_TM3CNT_H = TM_CASCADE | TM_ENABLE;
 
 	backupSramLite();
 	//////////////////////

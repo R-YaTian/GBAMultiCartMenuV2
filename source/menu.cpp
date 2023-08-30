@@ -115,7 +115,7 @@ int Menu::getDecision(int cur_x, int cur_y){
 		printCursor(cur_x, cur_y);
 	} while(hasChosen == false);
 	mmStop();
-    return selected;
+	return selected;
 }
 
 void Menu::printSelection(){
