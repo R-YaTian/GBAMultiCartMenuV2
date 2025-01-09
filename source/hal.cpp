@@ -1,7 +1,5 @@
-
 #include "hal.h"
-#define SCREEN_WIDTH (240)
-#define SCREEN_HEIGHT (160)
+#include "gba_video.h"
 
 u16 (*vram)[240] = (u16 (*)[240])VRAM;
 EWRAM_BSS u16 vramBuf[SCREEN_HEIGHT][SCREEN_WIDTH];

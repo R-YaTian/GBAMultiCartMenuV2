@@ -27,7 +27,7 @@ SOURCES		:= source
 INCLUDES	:= include
 GAME_TITLE  := ausar_menu
 DATA		:=
-MUSIC		:=
+MUSIC		:= music
 
 #---------------------------------------------------------------------------------
 # options for code generation

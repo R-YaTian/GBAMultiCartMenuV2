@@ -79,7 +79,7 @@ static int fbDrawUtf16(u32 rune,u16 color) {
 
 void utf8to16AndDraw(const char * text,u16 color){
   int utf8_len = strlen(text);
-	for(int i = 0; i < utf8_len;i){
+	for(int i = 0; i < utf8_len;){
 		u16 char_utf16;
 		if(!(text[i] & 0x80)){
 			char_utf16 = text[i++];
@@ -92,6 +92,7 @@ void utf8to16AndDraw(const char * text,u16 color){
 			char_utf16 |=  text[i++] & 0x3F;
 		}else{
 			i++; // out of range or something (This only does up to U+FFFF since it goes to a U16 anyways)
+      continue;
 		}
     fbDrawUtf16(char_utf16,color);
 	}

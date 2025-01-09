@@ -141,7 +141,7 @@ void loadFlashSaveToBuffer(int Game_index, bool loadFromAutoSave){
 int trySaveGame(){
     LastTimeRun last_run = *(volatile LastTimeRun*)(GAME_ROM + META_BLOCK_IDX * BLOCK_SIZE);
     if(last_run.isValid()){
-        std::string gameInfoStr = "欢迎使用Ausar合卡管理菜单V1.0\n";
+        std::string gameInfoStr = "欢迎使用Ausar合卡管理菜单V1.1\n";
         gameInfoStr += "R-YaTian(天涯)优化版\n仅供学习交流使用,禁止商业用途\n";
         gameInfoStr += "上次运行的游戏:\n游戏名: ";
         gameInfoStr += (const char*)last_run.gameName;
